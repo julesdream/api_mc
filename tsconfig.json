@@ -13,6 +13,8 @@
     ],
     "forceConsistentCasingInFileNames": true,
     "strict": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "skipLibCheck": true
   },
   "include": [

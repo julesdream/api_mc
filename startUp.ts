@@ -1,30 +1,38 @@
 import express, { Application, Request, Response } from "express";
 import Database from "./infra/db";
-import newsController from "./controller/newsController";
+
+import './shared/container';
+import "reflect-metadata";
+import videosRouter from "./router/videosRouter";
+import newsRouter from "./router/newsRouter";
+import galeriaRouter from "./router/galeriaRouter";
 
 class StartUp {
-    public app: Application;
-    private _db: Database = new Database();
+  public app: Application;
+  private _db: Database = new Database();
 
-    constructor() {
-        this.app = express();
-        this._db.createConnection();
-        this.routes();
-     }
+  constructor() {
+    this.app = express();
+    this._db.createConnection();
+    this.routes();
+  }
 
-    routes() {
-        this.app.route("/").get((req, res) => {
-            res.send({ versao: "0.0.1" });
-        });
+  private async init() {
+    await this._db.createConnection();
+    this.routes();
+  }
 
-        this.app.route("/api/v1/news/:page/:qtd").get((req: Request, res: Response) => {
-            return newsController.get(req, res);
-        });
+  routes() {
+    this.app
+    .route("/")
+    .get((req, res) => {
+      res.send({ versao: "0.0.2" });
+    });
 
-        this.app.route("/api/v1/news/:id").get((req: Request, res: Response) => {
-            return newsController.getById(req, res);
-        });
-     }
+    this.app.use("/", newsRouter)
+    this.app.use("/", videosRouter)
+    this.app.use("/", galeriaRouter)
+    }
 }
 
-export default new StartUp()
+export default new StartUp();
